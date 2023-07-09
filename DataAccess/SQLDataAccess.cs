@@ -17,7 +17,7 @@ namespace DataAccess
             }
         }
 
-        public IEnumerable<T> LoadRecord<T>(string sqlStatement, T parameters, string connectionString)
+        public IEnumerable<T> LoadRecord<T, U>(string sqlStatement, U parameters, string connectionString)
         {
             using (IDbConnection connection = new SqlConnection(connectionString))
             {
@@ -54,9 +54,8 @@ namespace DataAccess
                         throw;
                     }
                 }
-                    
+
             }
         }
     }
 }
-

@@ -28,7 +28,7 @@ namespace DataAccess
             return db.LoadData<InventoryModel, dynamic>(sql, new { upcCode = upcCode }, _connectionString);
         }
 
-        public (List<InventoryModel> inventoryExists, List<InventoryModel> inventoryNotExists) SplitIncomingInventory (List<InventoryModel> incomingInventory)
+        public (List<InventoryModel> inventoryExists, List<InventoryModel> inventoryNotExists) SplitIncomingInventory(List<InventoryModel> incomingInventory)
         {
             List<InventoryModel> inventoryExists = new List<InventoryModel>();
             List<InventoryModel> inventoryNotExists = new List<InventoryModel>();
@@ -51,14 +51,14 @@ namespace DataAccess
 
             return (inventoryExists, inventoryNotExists);
         }
-        
+
         public void BulkUpdateInventory(List<InventoryModel> inventoryExists, List<InventoryModel> inventoryNotExists)
         {
             string sql = "UPDATE dbo.OnHandInventory SET Quantity = @Quantity WHERE UPC = @UPC";
             db.BulkSaveData(sql, inventoryExists, _connectionString);
 
             sql = "INSERT INTO dbo.OnHandInventory (UPC, Quantity, Warehouse) VALUES(@UPC, @Quantity, @Warehouse)";
-            db.BulkSaveData(sql,inventoryNotExists, _connectionString);
+            db.BulkSaveData(sql, inventoryNotExists, _connectionString);
         }
 
     }

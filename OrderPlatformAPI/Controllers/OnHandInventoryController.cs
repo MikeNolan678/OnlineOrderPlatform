@@ -33,7 +33,7 @@ namespace OrderPlatformAPI.Controllers
         }
 
         // GET api/<OnHandInventoryController>/5
-        [HttpGet ("{upcCode}")]
+        [HttpGet("{upcCode}")]
         public string Get(string upcCode)
         {
             SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
@@ -63,14 +63,6 @@ namespace OrderPlatformAPI.Controllers
             }
 
             return Ok();
-        }
-
-        // PUT api/<OnHandInventoryController>/5
-        [HttpPut]
-        public void Put([FromBody] InventoryModel inventoryModel)
-        {
-           
-
         }
     }
 }
