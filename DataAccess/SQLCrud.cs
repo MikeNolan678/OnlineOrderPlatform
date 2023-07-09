@@ -23,7 +23,7 @@ namespace DataAccess
 
         public List<InventoryModel> GetInventoryByItem(string upcCode)
         {
-            string sql = "select * from dbo.OnHandInventory OH where OH.UPC = @upcCode";
+            string sql = "select * from dbo.OnHandInventory where UPC = @upcCode";
 
             return db.LoadData<InventoryModel, dynamic>(sql, new { upcCode = upcCode }, _connectionString);
         }
@@ -35,7 +35,7 @@ namespace DataAccess
 
             foreach (var item in incomingInventory)
             {
-                string sql = "SELECT UPC FROM dbo.OnHandInventory  WHERE UPC = @upc";
+                string sql = "SELECT UPC FROM dbo.OnHandInventory WHERE UPC = @upc";
 
                 var result = db.LoadRecord<dynamic>(sql, new { upc = item.UPC }, _connectionString);
 
