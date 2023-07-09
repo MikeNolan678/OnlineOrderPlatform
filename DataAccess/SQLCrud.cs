@@ -1,10 +1,6 @@
 ﻿using DataAccess.Models;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Reflection.Emit;
 
 namespace DataAccess
 {
@@ -30,6 +26,39 @@ namespace DataAccess
             string sql = "select * from dbo.OnHandInventory OH where OH.UPC = @upcCode";
 
             return db.LoadData<InventoryModel, dynamic>(sql, new { upcCode = upcCode }, _connectionString);
+        }
+
+        public (List<InventoryModel> inventoryExists, List<InventoryModel> inventoryNotExists) SplitIncomingInventory (List<InventoryModel> incomingInventory)
+        {
+            List<InventoryModel> inventoryExists = new List<InventoryModel>();
+            List<InventoryModel> inventoryNotExists = new List<InventoryModel>();
+
+            foreach (var item in incomingInventory)
+            {
+                string sql = "SELECT UPC FROM dbo.OnHandInventory  WHERE UPC = @upc";
+
+                var result = db.LoadRecord<dynamic>(sql, new { upc = item.UPC }, _connectionString);
+
+                if (!result.Any())
+                {
+                    inventoryNotExists.Add(item);
+                }
+                else
+                {
+                    inventoryExists.Add(item);
+                }
+            }
+
+            return (inventoryExists, inventoryNotExists);
+        }
+        
+        public void BulkUpdateInventory(List<InventoryModel> inventoryExists, List<InventoryModel> inventoryNotExists)
+        {
+            string sql = "UPDATE dbo.OnHandInventory SET Quantity = @Quantity WHERE UPC = @UPC";
+            db.BulkSaveData(sql, inventoryExists, _connectionString);
+
+            sql = "INSERT INTO dbo.OnHandInventory (UPC, Quantity, Warehouse) VALUES(@UPC, @Quantity, @Warehouse)";
+            db.BulkSaveData(sql,inventoryNotExists, _connectionString);
         }
 
     }

@@ -1,7 +1,5 @@
 ﻿using DataAccess;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using OrderPlatformAPI;
 using System.Text.Json;
 using DataAccess.Models;
 
@@ -49,15 +47,30 @@ namespace OrderPlatformAPI.Controllers
 
         // POST api/<OnHandInventoryController>
         [HttpPost]
-        public void Post([FromBody] InventoryModel inventoryModel)
+        public IActionResult Post([FromBody] List<InventoryModel> incomingInventory)
         {
+            SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
 
+            var (inventoryExists, inventoryNotExists) = sql.SplitIncomingInventory(incomingInventory);
+
+            try
+            {
+                sql.BulkUpdateInventory(inventoryExists, inventoryNotExists);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+
+            return Ok();
         }
 
         // PUT api/<OnHandInventoryController>/5
         [HttpPut]
         public void Put([FromBody] InventoryModel inventoryModel)
         {
+           
+
         }
     }
 }

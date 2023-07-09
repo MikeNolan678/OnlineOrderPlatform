@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Diagnostics.CodeAnalysis;
-using static DataAccess.Models.Enums;
 
 namespace DataAccess.Models
 {
