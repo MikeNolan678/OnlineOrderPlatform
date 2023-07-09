@@ -37,7 +37,7 @@ namespace DataAccess
             {
                 string sql = "SELECT UPC FROM dbo.OnHandInventory WHERE UPC = @upc";
 
-                var result = db.LoadRecord<dynamic>(sql, new { upc = item.UPC }, _connectionString);
+                var result = db.LoadRecord<InventoryModel, dynamic>(sql, new { upc = item.UPC }, _connectionString);
 
                 if (!result.Any())
                 {
