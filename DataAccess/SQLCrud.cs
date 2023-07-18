@@ -33,22 +33,22 @@ namespace DataAccess
             List<InventoryModel> inventoryExists = new List<InventoryModel>();
             List<InventoryModel> inventoryNotExists = new List<InventoryModel>();
 
+            string sql = "select UPC from dbo.OnHandInventory";
+
+            var existingItems = new HashSet<string>(db.LoadData<string, dynamic>(sql, new { }, _connectionString));
+
             foreach (var item in incomingInventory)
             {
-                string sql = "SELECT UPC FROM dbo.OnHandInventory WHERE UPC = @upc";
-
-                var result = db.LoadRecord<InventoryModel, dynamic>(sql, new { upc = item.UPC }, _connectionString);
-
-                if (!result.Any())
-                {
-                    inventoryNotExists.Add(item);
-                }
-                else
+                if (existingItems.Contains(item.UPC))
                 {
                     inventoryExists.Add(item);
                 }
+                else
+                {
+                    inventoryNotExists.Add(item);
+                }
             }
-
+            
             return (inventoryExists, inventoryNotExists);
         }
 

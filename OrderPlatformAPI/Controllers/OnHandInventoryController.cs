@@ -3,15 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using DataAccess.Models;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-
 namespace OrderPlatformAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class OnHandInventoryController : ControllerBase
     {
-
         private readonly ILogger<OnHandInventoryController> _logger;
 
         public OnHandInventoryController(ILogger<OnHandInventoryController> logger)

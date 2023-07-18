@@ -6,6 +6,7 @@ namespace DataAccess.Models
     {
         [Required]
         [MinLength(12), MaxLength(12)]
+        [Key]
         public string UPC { get; set; }
         [Required]
         public int Quantity { get; set; }
