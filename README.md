@@ -18,8 +18,8 @@ CREATE TABLE [dbo].[OnHandInventory]
 
 <h2>API Endpoints</h2>
 
-<h4>GET api/OnHandInventory</h4>
-<p>Returns all the items in the inventory in JSON format. It retrieves the data from the database, serializes it into JSON, and returns the JSON string.</p>
+<h3>GET api/OnHandInventory</h3>
+<p>A successful request returns the HTTP status code 200 (OK) along with a JSON array of InventoryModel objects. Each object includes the properties UPC, Quantity, and Warehouse.</p>
 
 ```json
 [
@@ -36,8 +36,15 @@ CREATE TABLE [dbo].[OnHandInventory]
 ]
 ```
 
-<h4>GET api/OnHandInventory/{upcCode}</h4>
-<p>Returns the specific item in the inventory that matches the provided UPC code. It fetches the data from the database, serializes the specific item into JSON, and returns the JSON string.</p>
+<h3>GET api/OnHandInventory/{upcCode}</h3>
+<p>This endpoint retrieves a specific inventory item that matches the provided UPC code. The data is fetched from the database, the specific item is serialized into JSON, and the JSON string is returned in the response body.
+
+<h5>Parameters:</h5>
+
+upcCode (path): The UPC code of the item to retrieve.
+
+<h5>Response:</h5>
+A successful request returns the HTTP status code 200 (OK) along with a JSON object of the InventoryModel. If the requested UPC code doesn't exist, it returns 404 (Not Found).</p>
 
 ```json
 [
@@ -49,8 +56,11 @@ CREATE TABLE [dbo].[OnHandInventory]
 ]
 ```
 
-<h4>POST api/OnHandInventory</h4>
-<p>Updates the inventory data. This endpoint expects a list of InventoryModel objects in the request body. The list of incoming inventory is split into items that exist in the current inventory and items that do not. Existing items are updated and non-existing items are inserted into the database. In the case of an exception during the operation, the changes are rolled back and an HTTP status 500 is returned along with the exception message. If the operation is successful, it returns an HTTP status 200.</p>
+<h3>POST api/OnHandInventory</h3>
+<p>This endpoint is used to update the inventory data. It expects a list of InventoryModel objects in the request body. The list of incoming inventory is split into items that already exist in the current inventory and items that do not. Existing items are updated and non-existing items are inserted into the database. In the case of an exception during the operation, the changes are rolled back, and an HTTP status 500 (Internal Server Error) is returned along with the exception message. If the operation is successful, it returns an HTTP status 200 (OK).
+
+<h5>Request body:</h5>
+The request body should include a JSON array of InventoryModel objects. Each object should include the properties UPC, Quantity, and Warehouse.</p>
 
 ```json
 [
@@ -66,6 +76,8 @@ CREATE TABLE [dbo].[OnHandInventory]
   }
 ]
 ```
+<h5>Response:</h5>
+A successful request returns the HTTP status code 200 (OK). In case of an error, it returns 400 (Bad Request) if the incoming inventory is null or empty, or 500 (Internal Server Error) for any other exceptions during the operation.
 
 <h2>Running the Application</h2>
 <p>To run this application, you need to have .NET Core 3.1 or later installed on your machine. You can clone this repository, navigate to the project directory in your terminal and run the following command:</p>
