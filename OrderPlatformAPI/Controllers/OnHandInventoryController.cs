@@ -18,28 +18,52 @@ namespace OrderPlatformAPI.Controllers
 
         // GET: api/<OnHandInventoryController>
         [HttpGet]
-        public string Get()
+        public ActionResult<string> Get()
         {
-            SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
+            try
+            {
+                SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
 
-            var inventory = sql.GetAllInventory();
+                var inventory = sql.GetAllInventory();
 
-            var jsonString = JsonSerializer.Serialize(inventory);
+                var jsonString = JsonSerializer.Serialize(inventory);
 
-            return jsonString;
+                 return Ok(jsonString);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting all inventory items");
+                
+                return StatusCode(500,$"Error: {e.Message}");
+            }
         }
 
         // GET api/<OnHandInventoryController>/5
         [HttpGet("{upcCode}")]
-        public string Get(string upcCode)
+        public ActionResult<string> Get(string upcCode)
         {
-            SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
+            try
+            {
+                SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
 
-            var inventory = sql.GetInventoryByItem(upcCode);
+                var inventory = sql.GetInventoryByItem(upcCode);
 
-            var jsonString = JsonSerializer.Serialize(inventory);
+                if (inventory == null)
+                {
+                    _logger.LogInformation($"Inventory item {upcCode} does not exist");
+                    return NotFound();
+                }
 
-            return jsonString;
+                var jsonString = JsonSerializer.Serialize(inventory);
+
+                return Ok(jsonString);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Error getting inventory item");
+
+                return StatusCode(500, $"Error: {e.Message}");
+            }
         }
 
         // POST api/<OnHandInventoryController>
@@ -48,18 +72,26 @@ namespace OrderPlatformAPI.Controllers
         {
             SQLCrud sql = new SQLCrud(OrderPlatformAPI.ConfigurationService.GetConnectionString());
 
-            var (inventoryExists, inventoryNotExists) = sql.SplitIncomingInventory(incomingInventory);
-
             try
             {
+                if (incomingInventory == null)
+                {
+                    _logger.LogError("Incoming inventory is empty");
+                    return BadRequest("Incoming inventory is empty");
+                }
+
+                var (inventoryExists, inventoryNotExists) = sql.SplitIncomingInventory(incomingInventory);
+
                 sql.BulkUpdateInventory(inventoryExists, inventoryNotExists);
+                return Ok();
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error processing incoming inventory");
                 return StatusCode(500, $"Error: {ex.Message}");
             }
 
-            return Ok();
+            
         }
     }
 }
