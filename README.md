@@ -7,7 +7,6 @@ This repo contains a .NET Core Web API (utilising Dapper for ORM), created to ma
 The inventory data is stored in a SQL database with the table structure as follows:
 
 ```sql
-CREATE TABLE [dbo].[OnHandInventory]
 (
     [UPC] NCHAR(12) NOT NULL, 
     [Quantity] INT NOT NULL, 
