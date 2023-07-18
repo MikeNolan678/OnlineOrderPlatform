@@ -1,0 +1,28 @@
+﻿@model DataAccess.Models.InventoryModel
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<h4>Check Inventory</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Index">
+            <div class="form-group">
+                <label asp-for="Warehouse" class="control-label"></label>
+                <input asp-for="Warehouse" class="form-control" />
+                <span asp-validation-for="Warehouse" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Submit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
